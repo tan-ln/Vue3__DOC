@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>render function</title>
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+
+<body>
+  <div id="root"></div>
+</body>
+<script>
+  const app = Vue.createApp({
+    data() {
+      return {
+      }
+    },
+    methods: {
+    },
+    template: `
+      <my-title :level="1">
+        hello  
+      </my-title>
+    `
+  })
+
+  app.component('my-title', {
+    props: ['level'],
+    methods: {
+    },
+    // 不用 模板，使用 render 函数的方法
+    render() {
+      const { h } = Vue
+      // console.log(h)
+      return h('h' + this.level, {}, [this.$slots.default(), h('h2', {}, 'something')])
+    },
+    // template: `
+    //   <h1 v-if="level === 1">
+    //     <slot />
+    //   </h1>
+    // `
+
+    // template 编译后，生成 render 函数
+    // Vue 的 h 方法返回一个 虚拟dom
+    // {
+    //   tagName: 'h1',
+    //   attributes: {},
+    //   text: this.$slots.default() == 'hello'
+    // }
+    // 最后的参数可以为 数组，用来递归 dom 树
+    //   text: [this.$slots.default(), {
+    //      h('h2', {}, 'something')
+    //  }]
+
+  })
+
+  app.mount('#root')
+</script>
+
+</html>

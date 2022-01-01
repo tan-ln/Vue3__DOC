@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>插件</title>
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+
+<body>
+  <div id="root"></div>
+</body>
+<script>
+  // plugin 插件
+  const myPlugin = {
+    // app => vue 根实例
+    install(app, options) {
+      app.provide('name', options.name)
+
+      app.directive('focus', {
+        mounted(el) {
+          el.focus()
+        }
+      })
+
+      app.mixin({
+        mounted() {
+          console.log('mixin')
+        }
+      })
+      // 对全局属性 扩展
+      // 属性名 加 $ 表示 私有
+      app.config.globalProperties.$sayHello = 'hello world'
+    }
+  }
+
+  const app = Vue.createApp({
+    template: `
+      <my-title />
+    `
+  })
+
+  app.component('my-title', {
+    inject: ['name'],
+    mounted() {
+      console.log(this.$sayHello)
+    },
+    template: `
+      <div>
+        {{name}}
+        <input v-focus />
+      </div>
+    `
+  })
+
+  // 使用插件
+  app.use(myPlugin, {
+    name: 'tang'
+  })
+
+  app.mount('#root')
+</script>
+
+</html>

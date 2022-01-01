@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>reactive 响应式引用</title>
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+
+<body>
+  <div id="root"></div>
+</body>
+<script>
+  // ref, reactive 响应式引用
+  // 原理：通过 proxy 对数据封装，当数据变化时，触发模板等内容更新
+  // ref 处理基础类型的数据
+
+  const app = Vue.createApp({
+    template: `
+      <div>
+        name: {{name}}  
+      </div>
+    `,
+    setup(props, context) {
+      // const { ref } = Vue
+      // // proxy: 'tang' 变成 proxy({ value: 'tang' }) 这样的响应式引用
+      // // 并且 在渲染时会自动改写成 name.value
+      // let name = ref('tang')
+      // setTimeout(() => {
+      //   name.value = '000'
+      // }, 1000)
+      // return { name }
+
+
+      // const { reactive } = Vue
+      // const nameObj = reactive([132])
+      // setTimeout(() => {
+      //   nameObj[0] = 465
+      // }, 1000)
+      // return { nameObj }
+
+
+      const { reactive, toRefs } = Vue
+      const nameObj = reactive({ name: 'tang' })
+      setTimeout(() => {
+        nameObj.name = '000'
+      }, 1000)
+      // proxy({ name: 'tang' }) 转换成 { name: proxy({ value: 'tang' }) }
+      const { name } = toRefs(nameObj)
+      return { name }
+
+
+    }
+  })
+
+  const vm = app.mount('#root')
+</script>
+
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>composition api 实现 TODO list</title>
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+
+<body>
+  <div id="root"></div>
+</body>
+
+<script>
+  // 封装处理 list
+  const listReactiveEffect = () => {
+    const { reactive } = Vue
+    const list = reactive([])
+    const addItemTodoList = (item) => {
+      list.push(item)
+    }
+    return { list, addItemTodoList }
+  }
+
+  // 封装处理 inputValue
+  const inputReactiveEffect = () => {
+    const { ref } = Vue
+    const inputValue = ref('')
+    const handleInputValChange = (e) => {
+      inputValue.value = e.target.value
+    }
+    return { inputValue, handleInputValChange }
+  }
+
+  
+  const app = Vue.createApp({
+    // setup() {
+    //   const { ref, reactive } = Vue
+
+    //   // 包装为 proxy
+    //   const inputValue = ref('123')
+    //   const list = reactive([])
+
+    //   // methods
+    //   const handleInputValChange = (e) => {
+    //     inputValue.value = e.target.value
+    //   }
+    //   const handleSubmit = () => {
+    //     list.push(inputValue.value)
+    //   }
+
+    //   // 向外 暴露 data | methods | ...
+    //   return {
+    //     list,
+    //     inputValue,
+    //     handleInputValChange,
+    //     handleSubmit
+    //   }
+    
+    // 将 list 和 inputvalue 抽离
+    setup() {
+      // 引入封装好的 inputvalue && list
+      const { list, addItemTodoList } = listReactiveEffect()
+      const { inputValue, handleInputValChange } = inputReactiveEffect()
+
+      // 写法 1 直接在 标签 箭头函数
+      // <button @click="() => addItemTodoList(inputValue)">提交</button>
+      // 写法 2
+      const handleSubmit = () => {
+        addItemTodoList(inputValue.value)
+        // 提交 inputValue 后清空 input
+        inputValue.value = ''
+      }
+
+      return {
+        list, addItemTodoList, handleSubmit, 
+        inputValue, handleInputValChange
+      }
+    },
+    template: `
+      <div>
+        <div>
+          <input :value="inputValue" @input="handleInputValChange" />
+          <button @click="handleSubmit">提交</button>
+        </div>
+        <ul>
+          <li v-for="(item, index) in list" :key="index">{{item}}</li>
+        </ul>
+      </div>
+    `,
+  })
+
+  const vm = app.mount('#root')
+</script>
+
+</html>

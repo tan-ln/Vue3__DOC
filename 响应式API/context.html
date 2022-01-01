@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>context</title>
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+
+<body>
+  <div id="root"></div>
+</body>
+<script>
+  // toRef
+  const app = Vue.createApp({
+    template: `
+      <child app="app">
+        parent
+      </child>
+    `,
+  })
+
+  app.component('child', {
+    setup(props, context) {
+      const { h } = Vue
+      // attrs: Non-Props 属性 --> 父组件传递的属性子组件不接收
+      const { attrs, slots, emit } = context
+      // console.log(attrs)      // Proxy {app: "app", __vInternal: 1}
+      // console.log(slots)        // Proxy {_: 1, __vInternal: 1, default: ƒ}
+      // console.log(slots.default())  // [] 虚拟 dom
+      // console.log(emit)        // 向外触发事件 emit('change'), 等价于methods 里的 this.$emit('change')
+
+      // 调用渲染函数
+      // 如果返回了渲染函数，则不能再返回其他 property
+      // 可以通过 父组件的 ref 或 expose({ ... })
+      return () => h('div', {}, slots.default())
+    }
+  })
+
+  const vm = app.mount('#root')
+</script>
+
+</html>

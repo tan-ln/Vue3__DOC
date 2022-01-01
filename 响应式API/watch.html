@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>watch && watchEffect</title>
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+
+<body>
+  <div id="root"></div>
+</body>
+<script>
+  const app = Vue.createApp({
+    setup(props, context) {
+      const { ref, reactive, watch, watchEffect, toRefs } = Vue
+
+      // const name= ref('')
+      const count= ref(0)
+      const nameObj= reactive({ name: 'tang', engName: 'lucifer' })
+
+      // 具备一定的惰性 lazy，首次不会执行
+      // ref 监听内容
+      // watch(name, (curVal, preVal) => {})
+
+      // reactive 监听内容 接受 箭头函数, 多个内容接受 函数数组[]
+      // watch(() => nameObj.name, (curVal, preVal) => {})
+      watch(
+        [() => nameObj.name, () => nameObj.engName], 
+        ([curName, curEng], [preName, preEng]) => {
+          // console.log(curName, curEng, preName, preEng)
+        }
+      )
+
+      // 立即执行传入的一个函数，
+      watchEffect(() => {
+        console.log(count.value)    // 0
+      })
+      setTimeout(() => {
+        count.value ++              // 1
+      }, 1000);
+
+
+      const { name, engName } = toRefs(nameObj)
+      return { name, engName, count }
+    },
+    template: `
+      <div>
+        <div>
+          Name: <input v-model="name" />
+        </div>
+        <h1>name is {{name}}</h1>
+        <div>
+          Name: <input v-model="engName" />
+        </div>
+        <h2>english name is {{engName}}</h2>
+        <h3>number: {{count}}</h3>
+      </div>
+    `,
+  })
+
+  const vm = app.mount('#root')
+</script>
+
+</html>

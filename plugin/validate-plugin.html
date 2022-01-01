@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数据校验插件</title>
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+
+<body>
+  <div id="root"></div>
+</body>
+<script>
+  const app = Vue.createApp({
+    data() {
+      return {
+        name: 'tang',
+        age: 23
+      }
+    },
+    rules: {
+      age: {
+        validate: age => age > 25,
+        message: 'too young, too simple'
+      },
+      name: {
+        validate: name => name.length > 3,
+        message: 'name too short'
+      }
+    },
+    template: `
+      <div>
+        name: {{name}}  
+        --
+        age: {{age}}
+      </div>
+    `
+  })
+
+  // 验证插件
+  const validatorPlugin = (app, options) => {
+    // 也可单独使用 mixin，不用 plugin 封装，封装后语义性更好
+    app.mixin({
+      created() {
+        for (const key in this.$options.rules) {
+          const element = this.$options.rules[key]
+          // 监听数据变化
+          this.$watch(key, (value) => {
+            console.log(key + ':' + value)
+            const res = element.validate(value)
+            if (!res) console.log(element.message)
+          })
+        }
+        this.$options.rules
+      }
+    })
+  }
+
+  app.use(validatorPlugin)
+
+  const vm = app.mount('#root')
+</script>
+
+</html>

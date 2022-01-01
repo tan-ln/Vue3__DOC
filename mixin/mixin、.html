@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mixin</title>
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+<style>
+</style>
+
+<body>
+  <div id="root"></div>
+</body>
+<script>
+  // 局部 mixin
+  const myMixin = {
+    data() {
+      return {
+        number: 2
+      }
+    }
+  }
+
+  // 全局 mixin
+  // app.mixin({
+  //   ...
+  // })
+
+  const app = Vue.createApp({
+    // 自定义属性
+    number: 100,
+    data() {
+      return {
+        number: 0
+      }
+    },
+    mixins: [myMixin],
+    methods: {
+      handleClick() {
+      },
+    },
+    template: `
+      <div>
+        <div>{{number}}</div>
+        <button @click="handleClickAdd">add</button>  
+      </div>
+    `
+  })
+
+  const VM = app.mount('#root')
+</script>
+
+</html>

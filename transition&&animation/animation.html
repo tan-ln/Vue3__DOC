@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animation</title>
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+<style>
+  @keyframes leftToRight {
+    0% {
+      transform: translateX(100px);
+    }
+    50% {
+      transform: translateX(50px);
+    }
+    0% {
+      transform: translateX(0px);
+    }
+  }
+  .animation {
+    animation: leftToRight 3s;
+  }
+
+  .transition {
+    transition: 3s background-color ease;
+  }
+  .blue {
+    background-color: blue;
+  }
+  .red {
+    background-color: red;
+  }
+</style>
+
+<body>
+  <div id="root"></div>
+</body>
+<script>
+  const app = Vue.createApp({
+    data() {
+      return {
+        animat: {
+          animation: false,
+          transition: true,
+          blue: true,
+          red: false
+        }
+      }
+    },
+    methods: {
+      handleClickAni() {
+        this.animat.animation = !this.animat.animation
+      },
+      handleClickTra() {
+        this.animat.blue = !this.animat.blue 
+        this.animat.red = !this.animat.red 
+      },
+    },
+    template: `
+      <div :class="animat">hello world</div>
+      <button @click="handleClickAni">clickAnimation</button>
+      <button @click="handleClickTra">clickTransition</button>
+    `
+  })
+
+  app.component('myform', {
+    methods: {
+    },
+    template: `
+    `
+  })
+
+  app.mount('#root')
+</script>
+
+</html>

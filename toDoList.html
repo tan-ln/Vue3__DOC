@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To Do List</title>
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+
+<body>
+  <div id="root"></div>
+</body>
+<script>
+  const app = Vue.createApp({
+    data() {
+      return {
+        list: []
+      }
+    },
+    methods: {
+      handleAddItem() {
+        this.list.unshift(this.inputValue)
+        this.inputValue = ''
+      }
+    },
+    template: `
+      <div>
+        <input v-model="inputValue" />
+        <button @click="handleAddItem" :title="inputValue">增加</button>
+        <ul>
+          <todo-item v-for="item of list" v-bind:content="item" />  
+        </ul>
+      </div>
+    `
+  })
+
+  // 局部组件，需要声明在前，并注册 components: { ToDOItem }
+  const ToDOItem = {
+    data() {
+      return {}
+    },
+    template: ''
+  }
+
+  // 全局组件
+  app.component('todo-item', {
+    props:['content'],
+
+    template: `
+      <li>{{content}}</li>
+    `
+  })
+
+  app.mount('#root')
+</script>
+
+</html>

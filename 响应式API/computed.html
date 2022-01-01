@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>computed</title>
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+
+<body>
+  <div id="root"></div>
+</body>
+<script>
+  const app = Vue.createApp({
+    setup(props, context) {
+      const { ref, reactive, computed } = Vue
+      // const { attrs, slots, emit } = context
+
+      const count = ref(0)
+      const countObj = reactive({ count: 0 })
+      const handleClick = () => {
+        count.value += 1
+        countObj.count += 1
+      }
+
+      // 计算属性 接受一个 getter 函数
+      // 返回一个 不可变 的 ref 对象
+      // const countAddFive = computed(() => {
+      //   return count.value + 5
+      // })
+
+      // ref
+      // 或者接受 get 和 set 函数对象
+      // 创建 可写 的 ref
+      const countAddFive = computed({
+        // 读取 countAddFive 的时候，同上
+        get: () => count.value + 5,
+        // 修改 countAddFive 的时候
+        set: (param) => count.value = param - 10
+      })
+
+      // reactive
+      const countObjAdd = computed({
+        get: () => countObj.count + 8,
+      })
+
+      // 测试 set 方法
+      setTimeout(() => {
+        countAddFive.value = 100
+      }, 1000);
+
+      return { count, countAddFive, handleClick, countObj, countObjAdd }
+    },
+    template: `
+      <div @click="handleClick">
+        <h1>{{count}} --- {{countAddFive}}</h1>
+        <h2>{{countObj.count}} --- {{countObjAdd}}</h2>
+      </div>
+    `,
+  })
+
+  const vm = app.mount('#root')
+</script>
+
+</html>
